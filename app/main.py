@@ -7,7 +7,7 @@ app = Flask(__name__)
 # TODO: Extract the DB related stuff to it's own module.
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://test:test@0.0.0.0:3306/UNDP'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://test:test@db:3306/UNDP'
 
 db = SQLAlchemy(app)
 
