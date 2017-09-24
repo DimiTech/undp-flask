@@ -1,0 +1,35 @@
+version: '3'
+
+services:
+
+  server:
+    image: nginx:1.13
+    volumes:
+      - './static:/usr/share/nginx/html:ro'
+    ports:
+      - 80:80
+    depends_on:
+      - db
+      - app
+
+  app:
+    build: ./app/
+    environment:
+      MYSQL_HOST: http://db
+      MYSQL_PORT: 3306
+      MYSQL_USER: test
+      MYSQL_PASS: test
+    ports: # TODO: Close the ports.
+      - 5000:5000
+
+  db:
+    image: mysql:5.7
+    environment:
+      MYSQL_DATABASE: UNDP
+      MYSQL_USER: test
+      MYSQL_PASSWORD: test
+      MYSQL_ROOT_PASSWORD: root 
+    volumes:
+      - './SQL/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d:ro'
+    ports: # TODO: Close the ports.
+      - 3306:3306
