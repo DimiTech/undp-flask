@@ -28,59 +28,40 @@ migrate = Migrate(app, db)
 
 # TODO: Move the models somewhere else.
 
-class ContactPeople(db.Model):
-    __tablename__ = 'contact_people'
-    person_id = db.Column(
-        'person_id', 
+class ApplicationTypes(db.Model):
+    __tablename__ = 'application_types'
+    id = db.Column(
+        'id', 
         db.Integer,
         unique=True,
         primary_key=True,
         nullable=False
     )
-    full_name = db.Column(
-        'full_name',
-        db.String(255),
-        nullable=False
-    )
-    address = db.Column(
-        'address',
-        db.String(255),
-        nullable=False
-    )
-    postal_code = db.Column(
-        'postal_code',
-        db.String(100),
-        nullable=False
-    )
-    e_mail = db.Column(
-        'e_mail',
-        db.String(100),
-        nullable=False
-    )
-    phone = db.Column(
-        'phone',
+    name = db.Column(
+        'name',
         db.String(100),
         nullable=False
     )
 
 class Application(db.Model):
     __tablename__ = 'applications'
-    application_id = db.Column(
-        'application_id', 
+    id = db.Column(
+        'id', 
         db.Integer,
         unique=True,
         primary_key=True,
         nullable=False
     )
-    application_uuid = db.Column(
-        'application_uuid', 
+    uuid = db.Column(
+        'uuid', 
         db.Unicode(36),
         unique=True,
         nullable=False
     )
-    application_type = db.Column(
-        'application_type',
-        db.String(50),
+    application_type_id = db.Column(
+        'application_type_id',
+        db.Integer,
+        db.ForeignKey('application_types.id'),
         nullable=False
     )
     title = db.Column(
@@ -98,9 +79,9 @@ class Application(db.Model):
         db.String(500),
         nullable=False
     )
-    contact_person_id = db.Column(
-        'contact_person_id', 
-        db.Integer,
+    contact_person = db.Column(
+        'contact_person', 
+        db.JSON,
         nullable=False
     )
     applicant_website = db.Column(
@@ -111,6 +92,16 @@ class Application(db.Model):
     project_duration_in_months = db.Column(
         'project_duration_in_months', 
         db.SmallInteger,
+        nullable=False
+    )
+    other_applicants = db.Column(
+        'other_applicants',
+        db.JSON,
+        nullable=True
+    )
+    project_summaries = db.Column(
+        'project_summaries',
+        db.JSON,
         nullable=False
     )
     detailed_description = db.Column(
@@ -144,35 +135,6 @@ class Application(db.Model):
         nullable=False
     )
 
-# TODO: Add the `application_id` foreign key.
-
-class ProjectSummary(db.Model):
-    __tablename__ = 'project_summaries'
-    application_id = db.Column(
-        'application_id', 
-        db.Integer,
-        unique=True,
-        primary_key=True,
-        nullable=False
-    )
-    summary_id = db.Column(
-        'summary_id', 
-        db.Integer,
-        unique=True,
-        primary_key=True,
-        nullable=False
-    )
-    language = db.Column(
-        'language', 
-        db.Unicode(2),
-        nullable=False
-    )
-    summary = db.Column(
-        'summary', 
-        db.Text,
-        nullable=False
-    )
-
 # --------------------------------------------------------------------------- #
 
 @app.route('/', methods=['GET'])
@@ -180,48 +142,28 @@ def index():
     return 'APPLICATION WORKS!'
 
 @app.route('/', methods=['POST'])
-def test():
+def create_new_application():
     new_uuid = str(uuid.uuid4())
     data = request.get_json()
-    new_contact_person = ContactPeople(
-        full_name=data['contact_person']['full_name'],
-        address=data['contact_person']['address'],
-        postal_code=data['contact_person']['postal_code'],
-        e_mail=data['contact_person']['e_mail'],
-        phone=data['contact_person']['phone'],
-    )
     new_application = Application(
-        application_uuid=new_uuid,
-        application_type=data['application_type'],
-        title=data['title'],
-        relevant_interests=data['relevant_interests'],
-        self_government=data['self_government'],
-        contact_person_id=data['contact_person_id'],
-        applicant_website=data['applicant_website'],
-        project_duration_in_months=data['project_duration_in_months'],
-        detailed_description=data['detailed_description'],
-        innovation=data['innovation'],
-        project_activities=data['project_activities'],
-        expected_outcomes=data['expected_outcomes'],
-        gender_approach=data['gender_approach'],
-        project_budget=data['project_budget']
+        uuid                       = new_uuid,
+        application_type_id        = data['application_type_id'],
+        title                      = data['title'],
+        relevant_interests         = data['relevant_interests'],
+        self_government            = data['self_government'],
+        contact_person             = data['contact_person'],
+        applicant_website          = data['applicant_website'],
+        project_duration_in_months = data['project_duration_in_months'],
+        other_applicants           = data['other_applicants'],
+        project_summaries          = data['project_summaries'],
+        detailed_description       = data['detailed_description'],
+        innovation                 = data['innovation'],
+        project_activities         = data['project_activities'],
+        expected_outcomes          = data['expected_outcomes'],
+        gender_approach            = data['gender_approach'],
+        project_budget             = data['project_budget']
     )
-    db.session.add(new_contact_person)
     db.session.add(new_application)
-    db.session.commit()
-
-    new_project_summary_en = ProjectSummary(
-        application_id=1, # TODO: Add the newly inserted application ID.
-        language='EN',
-        summary=data['project_summary_en']['summary']
-    )
-    new_project_summary_sr = ProjectSummary(
-        application_id=1, # TODO: Add the newly inserted application ID.
-        language='SR',
-        summary=data['project_summary_sr']['summary']
-    )
-    db.session.add(new_project_summary_en)
-    db.session.add(new_project_summary_sr)
     db.session.commit()
     
     return jsonify({'uuid': new_uuid}) 
