@@ -22,6 +22,24 @@ and fill in and submit the form.
 If the request was successful you should be redirected to a "sucess" page,
 with the `id` query parameter containing the UUID of the newly created record.
 
+This can also be tested by pasting in this command:
+
+```
+curl -is -X POST \
+-H "Content-Type: multipart/form-data" \
+-F 'title=test_title' \
+-F 'project_duration_in_months=3' \
+-F 'file_1=@README.md' \
+-F 'file_2=@docker-compose.yml' \
+http://localhost:5000/challenges/open_data \
+| grep Location: | cut -d ' ' -f2 \
+| sed 's/^[[:space:]]*//;s/[[:space:]]*$//' \
+| xargs curl -is -X GET \
+| grep -o "Form Posted Successfully!"
+
+```
+You should see this output: "Form Posted Successfully!".
+
 ## Project structure:
 
 ```
