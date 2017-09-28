@@ -6,15 +6,21 @@
 make
 ```
 
+Wait for a minute after all the containers are started in order for them to run
+their applications.
+
 ## Test the app:
 
+Go to:
+
 ```
-curl -i -X GET http://127.0.0.1:5000
-curl -i -X POST \
--H 'Content-Type: application/json' \ 
--d @example_open_data.json \
-http://127.0.0.1:5000
+http://localhost/
 ```
+
+and fill in and submit the form.
+
+If the request was successful you should be redirected to a "sucess" page,
+with the `id` query parameter containing the UUID of the newly created record.
 
 ## Project structure:
 
@@ -23,10 +29,9 @@ http://127.0.0.1:5000
 |-- docker-compose.yml
 |-- Makefile
 |-- README.md
-|-- app/    # All the application code lives here.
-|-- static/ # Static files served by nginx.
-`-- SQL/
-    `-- docker-entrypoint-initdb.d/ # Contains DB initialization scripts.
+|-- app/    # Main application code.
+    `-- db/ # Database initialization and Models.
+|-- static/ # Static pages served by nginx.
 ```
 
 ## DB Migrations:
