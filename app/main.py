@@ -12,6 +12,12 @@ from db import Application
 
 migrate = Migrate(app, db)
 
+# TODO: Implement these endpoints:
+#@app.route('/challenges/open_data', methods=['GET'])
+#@app.route('/challenges/open_data/<challenge_uuid:uuid>', methods=['GET'])
+#@app.route('/challenges/innovation/<challenge_uuid:uuid>', methods=['GET'])
+#@app.route('/challenges', methods=['GET'])
+
 @app.route('/challenges/open_data', methods=['POST'])
 def create_new_application():
     new_uuid = str(uuid.uuid4())
