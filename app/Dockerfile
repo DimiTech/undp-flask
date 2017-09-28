@@ -12,7 +12,8 @@ VOLUME ["/usr/src/app"]
 
 EXPOSE 5000
 
-ENTRYPOINT ["python3"]
+ENV FLASK_APP main.py
+ENV FLASK_DEBUG 1
 
-CMD ["main.py"]
+CMD ["flask", "run", "--host=0.0.0.0"]
 

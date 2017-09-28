@@ -15,6 +15,7 @@ services:
   app:
     build: ./app/
     environment:
+      FLASK_DEBUG: 1 # TODO: Delete this ENV VAR in production.
       MYSQL_HOST: db
       MYSQL_PORT: 3306
       MYSQL_USER: test

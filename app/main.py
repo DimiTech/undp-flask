@@ -5,13 +5,14 @@ from flask import Flask
 from flask import request
 from flask import jsonify
 from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
 
 app = Flask(__name__)
 
 # TODO: Create a sensible project structure.
 # TODO: Extract the DB related stuff to it's own module.
 
-MYSQL_HOST = os.getenv('MYSQL_HOST')
+MYSQL_HOST = os.getenv('MYSQL_HOST', '127.0.0.1')
 
 DB_CONN_STR = 'mysql+pymysql://test:test@%s:3306/UNDP' % MYSQL_HOST
 
@@ -20,6 +21,8 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN']  = True
 
 db = SQLAlchemy(app)
+
+migrate = Migrate(app, db)
 
 # --------------------------------------------------------------------------- #
 
@@ -174,11 +177,7 @@ class ProjectSummary(db.Model):
 
 @app.route('/', methods=['GET'])
 def index():
-    tests = Application.query.all()
-
-    for test in tests:
-        print(test.id)
-    return 'TEST ROUTE WORKS!!!'
+    return 'APPLICATION WORKS!'
 
 @app.route('/', methods=['POST'])
 def test():
@@ -226,7 +225,4 @@ def test():
     db.session.commit()
     
     return jsonify({'uuid': new_uuid}) 
-
-if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=5000)
 
