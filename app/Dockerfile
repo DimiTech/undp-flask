@@ -8,6 +8,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
+VOLUME ["/usr/src/app"]
+
 EXPOSE 5000
 
 ENTRYPOINT ["python3"]
