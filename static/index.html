@@ -1,2 +1,40 @@
-<p>Works!</p>
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>UNDP - Forms</title>
+</head>
+<body>
+    <form method="POST"
+        action="http://localhost:5000/challenges/open_data"
+        enctype="multipart/form-data">
+
+        <div>
+            <label for="title">Title</label>
+            <input type="text" id="title" name="title">
+        </div>
+
+        <div>
+            <label for="project_duration_in_months">
+                Project Duration (months):
+            </label>
+            <input type="number"
+                id="project_duration_in_months"
+                name="project_duration_in_months">
+        </div>
+
+        <div>
+            <label for="file_1">File 1</label>
+            <input type="file" id="file_1" name="file_1">
+        </div>
+
+        <div>
+            <label for="file_2">File 2</label>
+            <input type="file" id="file_2" name="file_2">
+        </div>
+
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html>
 
